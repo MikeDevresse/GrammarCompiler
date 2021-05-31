@@ -87,17 +87,17 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                         <input class='form-check-input' type='checkbox' id='interactif' name="interactif">
                         <label class='form-check-label' for='interactif'>Mode intéractif</label>
                     </div>
-					<?php if ($compiler !== null) { ?>
-					<div class="result">
-						<div class="inputs">
-							<?php
-							foreach ($compiler->getInput() as $k => $input) {
-								echo '<div class="input" id="input'.$k.'">'.$input.'</div>';
-							}
-							?>
-						</div>
-					</div>
-					<?php } ?>
+                    <?php if ($compiler !== null) { ?>
+                    <div class="result">
+                        <div class="inputs">
+                            <?php
+                            foreach ($compiler->getInput() as $k => $input) {
+                                echo '<div class="input" id="input'.$k.'">'.$input.'</div>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <?php } ?>
                 </div>
             </div>
         </form>
