@@ -64,17 +64,36 @@ header i {
 
 .input {
     display: inline-block;
-    border: 1px solid black;
-    padding: 2px;
-}
-
-.input.visited {
-    background-color: #ffc107;
+    padding: 2px 4px;
+    position: relative;
+    z-index: 10;
 }
 
 .input.active {
-    background-color: #198754;
     color: white;
+}
+
+.input:before {
+    content: " ";
+    position: absolute;
+    top:0;
+    left:0;
+    width: 0;
+    height: 0;
+    transition: width .3s, background-color .3s;
+    z-index: -1;
+}
+
+.input.visited:before {
+    background-color: #ffc107;
+    height: 100%;
+    width: 100%;
+}
+
+.input.active:before {
+    background-color: #198754;
+    height: 100%;
+    width: 100%;
 }
 
 .actions {
