@@ -14,7 +14,11 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
     }
     if(empty($formErrors)) {
         $compiler = new Compiler($_POST['grammar'], $_POST['input'], $_POST['dictionary']);
-        $compiler->compile();
+        try {
+            $compiler->compile();
+        } catch (CompilationException|UnknownRuleException $e) {
+            $error = $e->getMessage();
+        }
     }
 }
 ?>
@@ -70,6 +74,11 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                     </div>
                 </div>
                 <div class='col-lg-8 h-100 main d-flex flex-column'>
+                    <?php if(isset($error)) { ?>
+                        <div class="alert alert-danger">
+                            <?php echo $error; ?>
+                        </div>
+                    <?php } ?>
                     <div class='form-group'>
                         <label for='input'>
                             Entrée
@@ -145,7 +154,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                 document.getElementById('div-automatic').classList.add('d-none');
         });
     </script>
-    <?php if($compiler !== null and isset($_POST['interactif']) and $_POST['interactif'] == 'on') {  ?>
+    <?php if(isset($compiler) and isset($_POST['interactif']) and $_POST['interactif'] == 'on') {  ?>
         <script>
 
             let inputIndexes = <?php echo json_encode($compiler->getInputIndexes()) ?>;

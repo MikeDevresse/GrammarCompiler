@@ -1,5 +1,6 @@
 <?php
-
+require 'CompilationException.php';
+require 'UnknownRuleException.php';
 
 class Compiler
 {
@@ -57,6 +58,9 @@ class Compiler
                 $popped = array_pop($currentStack);
                 if(substr($in,0,3) == 'id(') $in = 'id';
                 if(substr($in,0,3) == 'nb(') $in = 'nb';
+                if(!isset($this->rules[$popped][$in])) {
+                    throw new UnknownRuleException($popped,$in);
+                }
                 $this->output[] = $this->rules[$popped][$in];
                 if(isset($this->grammar[end($this->output)][$popped])) {
                     foreach(array_reverse($this->grammar[end($this->output)][$popped]) as $item) {
