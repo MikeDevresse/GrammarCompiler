@@ -1,14 +1,19 @@
 <?php
+require './Compiler.php';
+
 $formErrors = [];
-if(isset($_POST['grammar']) and isset($_POST['input'])) {
+if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['dictionary'])) {
     if(empty($_POST['grammar'])) {
         $formErrors['grammar'] = 'Une grammaire doit être entrée.';
     }
-    elseif(empty($_POST['input'])) {
+    if(empty($_POST['input'])) {
         $formErrors['input'] = 'Veuillez entrer un programme.';
     }
-    else {
-        $compiler = new Compiler($_POST['grammar'], $_POST['input']);
+    if(empty($_POST['dictionary'])) {
+        $formErrors['dictionary'] = 'Veuillez entrer un dictionnaire.';
+    }
+    if(empty($formErrors)) {
+        $compiler = new Compiler($_POST['grammar'], $_POST['input'], $_POST['dictionary']);
     }
 }
 ?>
@@ -38,7 +43,7 @@ if(isset($_POST['grammar']) and isset($_POST['input'])) {
     <div class="container-fluid">
         <form method="post" class="h-100">
             <div class="row h-100">
-                <div class="col-lg-4 d-lg-block d-none grammar h-100 py-3">
+                <div class="col-lg-4 d-lg-flex d-none grammar py-3">
                    <div class="form-group">
                        <label for="grammar">
                            Grammaire
@@ -51,6 +56,17 @@ if(isset($_POST['grammar']) and isset($_POST['input'])) {
                        if(isset($formErrors['grammar'])) echo '<div class="invalid-feedback">'.$formErrors['grammar'].'</div>';
                        ?>
                    </div>
+                    <div class='form-group'>
+                        <label for='dictionary'>
+                            Dictionnaire
+                        </label>
+                        <?php
+                        echo '<textarea class="form-control ' . (isset($formErrors['dictionary']) ? 'is-invalid' : '') . '" name="dictionary" id="dictionary">' .
+                            ((isset($_POST['dictionary']) && !empty($_POST['dictionary'])) ? $_POST['dictionary'] : file_get_contents('default_dictionary.txt')) .
+                            '</textarea>';
+                        if (isset($formErrors['dictionary'])) echo '<div class="invalid-feedback">' . $formErrors['dictionary'] . '</div>';
+                        ?>
+                    </div>
                 </div>
                 <div class='col-lg-8 h-100 main'>
                     <div class='form-group'>
@@ -71,6 +87,17 @@ if(isset($_POST['grammar']) and isset($_POST['input'])) {
                         <input class='form-check-input' type='checkbox' id='interactif' name="interactif">
                         <label class='form-check-label' for='interactif'>Mode intéractif</label>
                     </div>
+					<?php if ($compiler !== null) { ?>
+					<div class="result">
+						<div class="inputs">
+							<?php
+							foreach ($compiler->getInput() as $k => $input) {
+								echo '<div class="input" id="input'.$k.'">'.$input.'</div>';
+							}
+							?>
+						</div>
+					</div>
+					<?php } ?>
                 </div>
             </div>
         </form>
