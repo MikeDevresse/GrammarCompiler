@@ -1,6 +1,7 @@
 <?php
 require 'CompilationException.php';
 require 'UnknownRuleException.php';
+require 'WrongInputException.php';
 
 class Compiler
 {
@@ -12,6 +13,9 @@ class Compiler
     private array $output;
     private array $inputIndexes;
 
+    /**
+     * @throws WrongInputException
+     */
     public function __construct(string $grammar, string $input, string $dictionary)
     {
         $this->grammar = self::parseGrammar($grammar);
@@ -73,6 +77,9 @@ class Compiler
         }
     }
 
+    /**
+     * @throws WrongInputException
+     */
     public static function parseInput(string $input, array $tokens): array {
         $inputArray = [];
         $input = str_replace(' ', '', str_replace("\n", '', $input));
@@ -109,6 +116,8 @@ class Compiler
                 }
             }
         } while(!empty($input) and $input != '');
+        if($inputArray[0] != 'debut') throw new WrongInputException($inputArray[0], 'debut', 0);
+        if(end($inputArray) != 'fin') throw new WrongInputException(end($inputArray), 'fin', count($inputArray)-1);
         return $inputArray;
     }
 

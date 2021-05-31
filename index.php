@@ -13,10 +13,10 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
         $formErrors['dictionary'] = 'Veuillez entrer un dictionnaire.';
     }
     if(empty($formErrors)) {
-        $compiler = new Compiler($_POST['grammar'], $_POST['input'], $_POST['dictionary']);
         try {
+            $compiler = new Compiler($_POST['grammar'], $_POST['input'], $_POST['dictionary']);
             $compiler->compile();
-        } catch (CompilationException|UnknownRuleException $e) {
+        } catch (CompilationException|UnknownRuleException|WrongInputException $e) {
             $error = $e->getMessage();
         }
     }
@@ -85,12 +85,11 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                         </label>
                         <div class="input-group">
                             <?php
-                            echo '<textarea class="form-control '.(isset($formErrors['input'])?'is-invalid':'').'" name="input" id="input">'.
-                                ((isset($_POST['input']) && !empty($_POST['input']))?$_POST['input']:'').
-                                '</textarea><button class="btn btn-primary">Compiler !</button>';
-                            if(isset($formErrors['input'])) echo '<div class="invalid-feedback">'.$formErrors['input'].'</div>';
+                                echo '<textarea class="form-control '.(isset($formErrors['input'])?'is-invalid':'').'" name="input" id="input">'.
+                                    ((isset($_POST['input']) && !empty($_POST['input']))?$_POST['input']:'').
+                                    '</textarea><button class="btn btn-primary">Compiler !</button>';
+                                if(isset($formErrors['input'])) echo '<div class="invalid-feedback">'.$formErrors['input'].'</div>';
                             ?>
-
                         </div>
                     </div>
                     <div class='form-check form-switch'>
