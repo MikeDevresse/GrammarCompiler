@@ -39,7 +39,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
 </head>
 <body>
     <header class="bg-primary">
-        <h3>Projet hébergé sur&nbsp;<a href="https://github.com/MikeDevresse/GrammarCompiler">github</a> <a href="#"><i class="fa fa-download"></i></a></h3>
+        <h3>Grammar compiler<a href="https://github.com/MikeDevresse/GrammarCompiler"><i class="fab fa-github"></i></a> <a href="https://github.com/MikeDevresse/GrammarCompiler/archive/refs/heads/main.zip"><i class="fa fa-download"></i></a></h3>
     </header>
     <div class="container-fluid">
         <form method="post" class="h-100">
