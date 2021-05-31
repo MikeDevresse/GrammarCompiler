@@ -7,6 +7,8 @@ class Compiler
     private array $rules;
     private array $tokens;
     private array $input;
+    private array $stack;
+    private array $output;
 
     public function __construct(string $grammar, string $input, string $dictionary)
     {
@@ -14,6 +16,10 @@ class Compiler
         $dictionaryArray = self::parseDictionary($dictionary);
         $this->tokens = $dictionaryArray['tokens'];
         $this->rules = $dictionaryArray['rules'];
+
+        $this->stack = [];
+        $this->stack[] = ['$','P'];
+        $this->output = [];
 
         $this->input = self::parseInput($input, $this->tokens);
     }
@@ -26,6 +32,42 @@ class Compiler
     public function getTokens()
     {
         return $this->tokens;
+    }
+
+    public function getStack(): array
+    {
+        return $this->stack;
+    }
+
+    public function getOutput(): array
+    {
+        return $this->output;
+    }
+
+    public function compile() {
+        $currentStack = $this->stack[0];
+        print_r($this->rules); echo '<br/>';
+        print_r($this->output); echo '<br/>';
+        print_r($this->grammar); echo '<br/>';
+        foreach($this->input as $in) {
+            do {
+                print_r($currentStack); echo ' current stack<br/>';
+                $popped = array_pop($currentStack);
+                if(substr($in,0,3) == 'id(') $in = 'id';
+                if(substr($in,0,3) == 'nb(') $in = 'nb';
+                echo $popped . ' ' . $in; echo ' popped / in <br/>';
+                //print_r($this->output); echo ' output <br/>';
+                $this->output[] = $this->rules[$popped][$in];
+                print_r($this->output); echo ' output <br/>';
+                if(isset($this->grammar[end($this->output)][$popped])) {
+                    foreach(array_reverse($this->grammar[end($this->output)][$popped]) as $item) {
+                        if($item != 'epsilon') $currentStack[] = $item;
+                    }
+                }
+                $this->stack[] = $currentStack;
+            } while(end($this->output) != 'pop' and end($this->output) != 'acc');
+            echo 'POP<br/>';
+        }
     }
 
     public static function parseInput(string $input, array $tokens): array {
@@ -68,18 +110,13 @@ class Compiler
         $grammarArray = [];
         foreach (explode("\n", $grammar) as $line) {
             $data = explode("\t",trim($line),3);
-            if(!is_int($data[0])) continue;
-            $grammarArray[$data[1]] = [
-                'id' => $data[0]
-            ];
-            foreach(explode(' ',$data[2]) as $output) {
-                $grammarArray[$data[1]]['outputs'][] = $output;
-            }
+            if(!is_numeric($data[0])) continue;
+            $grammarArray[$data[0]][$data[1]] = explode(' ',$data[2]);
         }
         return $grammarArray;
     }
 
-    public static function parseDictionary(string $dictionary) {
+    public static function parseDictionary(string $dictionary): array {
         $dictionaryArray = ['tokens'=>[],'rules'=>[]];
         foreach (explode("\n", $dictionary) as $line) {
             $data = explode("\t",trim($line),3);

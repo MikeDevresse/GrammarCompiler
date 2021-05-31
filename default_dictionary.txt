@@ -30,6 +30,7 @@ $	epsilon	acc
 debut	debut	pop
 fin	fin	pop
 ;	;	pop
+id	id	pop
 :=	:=	pop
 +	+	pop
 *	*	pop

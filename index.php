@@ -14,6 +14,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
     }
     if(empty($formErrors)) {
         $compiler = new Compiler($_POST['grammar'], $_POST['input'], $_POST['dictionary']);
+        $compiler->compile();
     }
 }
 ?>
@@ -95,6 +96,9 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                                 echo '<div class="input" id="input'.$k.'">'.$input.'</div>';
                             }
                             ?>
+                        </div>
+                        <div class="output">
+                            <?php print_r($compiler->getOutput()); ?>
                         </div>
                     </div>
                     <?php } ?>
