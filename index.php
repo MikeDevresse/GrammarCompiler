@@ -88,7 +88,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                         <input class='form-check-input' type='checkbox' id='interactif' name="interactif" <?php echo (isset($_POST['interactif']) and $_POST['interactif'] == 'on')? 'checked=""': '' ?>>
                         <label class='form-check-label' for='interactif'>Mode intéractif</label>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center d-none" id="div-automatic">
                         <div class='form-check form-switch'>
                             <input class='form-check-input' type='checkbox' id='automatic' name='automatic' <?php echo (isset($_POST['automatic']) and $_POST['automatic'] == 'on')? 'checked=""': '' ?>>
                             <label class='form-check-label' for='automatic'>Mode automatique</label>
@@ -99,7 +99,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                         </div>
                     </div>
 
-                    <?php if ($compiler !== null) { ?>
+                    <?php if (isset($compiler)) { ?>
                     <hr/>
                     <div class="result d-flex flex-column">
                         <h3>Entrée</h3>
@@ -136,9 +136,17 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
             </div>
         </form>
     </div>
+    <script>
+
+        document.getElementById('interactif').addEventListener('click', function() {
+            if(this.checked)
+                document.getElementById('div-automatic').classList.remove('d-none');
+            else
+                document.getElementById('div-automatic').classList.add('d-none');
+        });
+    </script>
     <?php if($compiler !== null and isset($_POST['interactif']) and $_POST['interactif'] == 'on') {  ?>
         <script>
-
 
             let inputIndexes = <?php echo json_encode($compiler->getInputIndexes()) ?>;
             let outputs = <?php echo json_encode($compiler->getOutput()) ?>;
