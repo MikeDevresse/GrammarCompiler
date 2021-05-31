@@ -1,3 +1,17 @@
+<?php
+$formErrors = [];
+if(isset($_POST['grammar']) and isset($_POST['input'])) {
+    if(empty($_POST['grammar'])) {
+        $formErrors['grammar'] = 'Une grammaire doit être entrée.';
+    }
+    elseif(empty($_POST['input'])) {
+        $formErrors['input'] = 'Veuillez entrer un programme.';
+    }
+    else {
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,9 +43,12 @@
                            Grammaire
 
                        </label>
-                       <textarea class="form-control" name="grammar" id="grammar"><?php
-                            echo $_POST['grammar'] ?? file_get_contents('default_grammar.txt');
-                       ?></textarea>
+                       <?php
+                       echo '<textarea class="form-control '.(isset($formErrors['grammar'])?'is-invalid':'').'" name="grammar" id="grammar">'.
+                           ((isset($_POST['grammar']) && !empty($_POST['grammar']))?$_POST['grammar']:file_get_contents('default_grammar.txt')).
+                           '</textarea>';
+                       if(isset($formErrors['grammar'])) echo '<div class="invalid-feedback">'.$formErrors['grammar'].'</div>';
+                       ?>
                    </div>
                 </div>
                 <div class='col-lg-8 h-100 main'>
@@ -40,10 +57,13 @@
                             Entrée
                         </label>
                         <div class="input-group">
-                            <textarea class='form-control' name='input' id='input'><?php
-                                echo $_POST['grammar'] ?? '';
-                            ?></textarea>
-                            <button class="btn btn-primary">Compiler !</button>
+                            <?php
+                            echo '<textarea class="form-control '.(isset($formErrors['input'])?'is-invalid':'').'" name="input" id="input">'.
+                                ((isset($_POST['input']) && !empty($_POST['input']))?$_POST['input']:'').
+                                '</textarea><button class="btn btn-primary">Compiler !</button>';
+                            if(isset($formErrors['input'])) echo '<div class="invalid-feedback">'.$formErrors['input'].'</div>';
+                            ?>
+
                         </div>
                     </div>
                     <div class='form-check form-switch'>
