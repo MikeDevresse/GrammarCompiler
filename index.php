@@ -127,7 +127,8 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                     </div>
                         <?php if(isset($_POST['interactif']) and $_POST['interactif'] == 'on'  and (!isset($_POST['automatic']) or $_POST['automatic'] != 'on')) {  ?>
                             <div class='actions'>
-                                <button type='button' class='btn btn-primary' id='nextButton'>Suivant</button>
+                                <button type="button" class="btn btn-outline-danger" id="previousButton">Précédent</button>
+                                <button type='button' class='btn btn-outline-primary' id='nextButton'>Suivant</button>
                             </div>
                         <?php } ?>
                     <?php } ?>
@@ -137,6 +138,8 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
     </div>
     <?php if($compiler !== null and isset($_POST['interactif']) and $_POST['interactif'] == 'on') {  ?>
         <script>
+
+
             let inputIndexes = <?php echo json_encode($compiler->getInputIndexes()) ?>;
             let outputs = <?php echo json_encode($compiler->getOutput()) ?>;
             let stacks = <?php echo json_encode($compiler->getStack()) ?>;
@@ -145,13 +148,43 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
             let stackEl = document.getElementById('stack');
 
             outputEl.innerText = '';
+
+            var currentState = 0;
+
+            function setState(i) {
+                outputEl.innerText = outputs.slice(0,i).join(' ');
+                Array.from(document.getElementsByClassName('active')).forEach(function(el) {
+                    el.classList.remove('active')
+                });
+                Array.from(document.getElementsByClassName('visited')).forEach(function(el) {
+                    el.classList.remove('visited')
+                });
+                for(let j = 0 ; j < i ; j++) {
+                    document.getElementById('input'+inputIndexes[j]).classList.add('visited');
+                }
+                document.getElementById('input'+inputIndexes[i]).classList.add('active');
+                stackEl.innerHTML = '';
+                for(let j = 0 ; j<stacks[i].length ; j++) {
+                    let div = document.createElement('div')
+                    div.innerText = stacks[i][j];
+                    stackEl.append(div);
+                }
+                currentState = i;
+            }
+
             <?php if(isset($_POST['automatic']) and $_POST['automatic'] == 'on') { ?>
             for(let i = 0 ; i<inputIndexes.length ; i++) {
                 setTimeout(function() {
-                    outputEl.innerText += ' ' + outputs[i];
-                    document.getElementById('input'+inputIndexes[i]).classList.add('active');
+                    setState(i)
                 },i*<?php echo $_POST['delay'] ?>);
             }
+            <?php } else { ?>
+                document.getElementById('nextButton').addEventListener('click',function() {
+                    setState(Math.min(currentState+1,inputIndexes.length))
+                });
+                document.getElementById('previousButton').addEventListener('click',function() {
+                    setState(Math.max(currentState-1,0))
+                })
             <?php } ?>
         </script>
     <?php } ?>

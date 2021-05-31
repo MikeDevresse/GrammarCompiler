@@ -68,6 +68,10 @@ header i {
     padding: 2px;
 }
 
+.input.visited {
+    background-color: #ffc107;
+}
+
 .input.active {
     background-color: #198754;
     color: white;
