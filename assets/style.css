@@ -67,3 +67,13 @@ header i {
     border: 1px solid black;
     padding: 2px;
 }
+
+.input.active {
+    background-color: #198754;
+    color: white;
+}
+
+.actions {
+    margin-top: auto;
+    text-align: right;
+}

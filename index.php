@@ -69,7 +69,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                         ?>
                     </div>
                 </div>
-                <div class='col-lg-8 h-100 main'>
+                <div class='col-lg-8 h-100 main d-flex flex-column'>
                     <div class='form-group'>
                         <label for='input'>
                             Entrée
@@ -85,11 +85,24 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                         </div>
                     </div>
                     <div class='form-check form-switch'>
-                        <input class='form-check-input' type='checkbox' id='interactif' name="interactif">
+                        <input class='form-check-input' type='checkbox' id='interactif' name="interactif" <?php echo (isset($_POST['interactif']) and $_POST['interactif'] == 'on')? 'checked=""': '' ?>>
                         <label class='form-check-label' for='interactif'>Mode intéractif</label>
                     </div>
+                    <div class="d-flex align-items-center">
+                        <div class='form-check form-switch'>
+                            <input class='form-check-input' type='checkbox' id='automatic' name='automatic' <?php echo (isset($_POST['automatic']) and $_POST['automatic'] == 'on')? 'checked=""': '' ?>>
+                            <label class='form-check-label' for='automatic'>Mode automatique</label>
+                        </div>
+                        <div class="form-group" style="margin-left: 10px">
+                            <label for="delay">Délai</label>
+                            <input class="form-control" type="number" id="delay" name="delay" value="<?php echo $_POST['delay']??'200'; ?>">
+                        </div>
+                    </div>
+
                     <?php if ($compiler !== null) { ?>
-                    <div class="result">
+                    <hr/>
+                    <div class="result d-flex flex-column">
+                        <h3>Entrée</h3>
                         <div class="inputs">
                             <?php
                             foreach ($compiler->getInput() as $k => $input) {
@@ -97,14 +110,50 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                             }
                             ?>
                         </div>
-                        <div class="output">
-                            <?php print_r($compiler->getOutput()); ?>
+                        <div class="output mt-2">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h3>Sortie</h3>
+                                    <div id="output"><?php echo implode(' ', $compiler->getOutput()); ?></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <h4>Pile</h4>
+                                    <div id="stack">
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                        <?php if(isset($_POST['interactif']) and $_POST['interactif'] == 'on'  and (!isset($_POST['automatic']) or $_POST['automatic'] != 'on')) {  ?>
+                            <div class='actions'>
+                                <button type='button' class='btn btn-primary' id='nextButton'>Suivant</button>
+                            </div>
+                        <?php } ?>
                     <?php } ?>
                 </div>
             </div>
         </form>
     </div>
+    <?php if($compiler !== null and isset($_POST['interactif']) and $_POST['interactif'] == 'on') {  ?>
+        <script>
+            let inputIndexes = <?php echo json_encode($compiler->getInputIndexes()) ?>;
+            let outputs = <?php echo json_encode($compiler->getOutput()) ?>;
+            let stacks = <?php echo json_encode($compiler->getStack()) ?>;
+
+            let outputEl = document.getElementById('output');
+            let stackEl = document.getElementById('stack');
+
+            outputEl.innerText = '';
+            <?php if(isset($_POST['automatic']) and $_POST['automatic'] == 'on') { ?>
+            for(let i = 0 ; i<inputIndexes.length ; i++) {
+                setTimeout(function() {
+                    outputEl.innerText += ' ' + outputs[i];
+                    document.getElementById('input'+inputIndexes[i]).classList.add('active');
+                },i*<?php echo $_POST['delay'] ?>);
+            }
+            <?php } ?>
+        </script>
+    <?php } ?>
 </body>
 </html>

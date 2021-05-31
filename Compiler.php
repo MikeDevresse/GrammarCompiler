@@ -9,6 +9,7 @@ class Compiler
     private array $input;
     private array $stack;
     private array $output;
+    private array $inputIndexes;
 
     public function __construct(string $grammar, string $input, string $dictionary)
     {
@@ -29,6 +30,11 @@ class Compiler
         return $this->input;
     }
 
+    public function getInputIndexes(): array
+    {
+        return $this->inputIndexes;
+    }
+
     public function getTokens()
     {
         return $this->tokens;
@@ -46,27 +52,20 @@ class Compiler
 
     public function compile() {
         $currentStack = $this->stack[0];
-        print_r($this->rules); echo '<br/>';
-        print_r($this->output); echo '<br/>';
-        print_r($this->grammar); echo '<br/>';
-        foreach($this->input as $in) {
+        foreach($this->input as $k => $in) {
             do {
-                print_r($currentStack); echo ' current stack<br/>';
                 $popped = array_pop($currentStack);
                 if(substr($in,0,3) == 'id(') $in = 'id';
                 if(substr($in,0,3) == 'nb(') $in = 'nb';
-                echo $popped . ' ' . $in; echo ' popped / in <br/>';
-                //print_r($this->output); echo ' output <br/>';
                 $this->output[] = $this->rules[$popped][$in];
-                print_r($this->output); echo ' output <br/>';
                 if(isset($this->grammar[end($this->output)][$popped])) {
                     foreach(array_reverse($this->grammar[end($this->output)][$popped]) as $item) {
                         if($item != 'epsilon') $currentStack[] = $item;
                     }
                 }
                 $this->stack[] = $currentStack;
+                $this->inputIndexes[] = $k;
             } while(end($this->output) != 'pop' and end($this->output) != 'acc');
-            echo 'POP<br/>';
         }
     }
 
@@ -85,7 +84,9 @@ class Compiler
                 if($currentToken) {
                     if($i != 0) {
                         $val = substr($input, 0, $i);
-                        $inputArray[] = (is_numeric($val)?'nb':'id')."($val)";
+                        if(trim($val) != '') {
+                            $inputArray[] = (is_numeric($val)?'nb':'id')."($val)";
+                        }
                     }
                     $inputArray[] = $currentToken;
                     $input = substr($input, $i + strlen($currentToken));
@@ -93,11 +94,12 @@ class Compiler
                 }
                 if($i == strlen($input)) {
                     $val = substr($input, 0, $i);
-                    if(is_numeric($val)) {
-                        $inputArray[] = 'nb('.$val.')';
-                    }
-                    else {
-                        $inputArray[] = 'id('.$val.')';
+                    if(trim($val) != '') {
+                        if (is_numeric($val)) {
+                            $inputArray[] = 'nb(' . $val . ')';
+                        } else {
+                            $inputArray[] = 'id(' . $val . ')';
+                        }
                     }
                     $input = '';
                 }
