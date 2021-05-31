@@ -8,6 +8,7 @@ if(isset($_POST['grammar']) and isset($_POST['input'])) {
         $formErrors['input'] = 'Veuillez entrer un programme.';
     }
     else {
+        $compiler = new Compiler($_POST['grammar'], $_POST['input']);
     }
 }
 ?>
