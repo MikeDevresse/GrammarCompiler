@@ -97,7 +97,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                         <input class='form-check-input' type='checkbox' id='interactif' name="interactif" <?php echo (isset($_POST['interactif']) and $_POST['interactif'] == 'on')? 'checked=""': '' ?>>
                         <label class='form-check-label' for='interactif'>Mode intéractif</label>
                     </div>
-                    <div class="d-flex align-items-center d-none" id="div-automatic">
+                    <div class="d-flex align-items-center  <?php echo (isset($_POST['interactif']) and $_POST['interactif'] == 'on')? '': 'd-none' ?>" id="div-automatic">
                         <div class='form-check form-switch'>
                             <input class='form-check-input' type='checkbox' id='automatic' name='automatic' <?php echo (isset($_POST['automatic']) and $_POST['automatic'] == 'on')? 'checked=""': '' ?>>
                             <label class='form-check-label' for='automatic'>Mode automatique</label>
