@@ -1,0 +1,16 @@
+nbRegle	entre	sorie
+1	P	debut S fin
+2	S	I R
+3	R	; I R
+4	R	epsilon
+5	I	id := E
+6	I	epsilon
+7	E	T E`
+8	E`	T E`
+9	E`	epsilon
+10	T	F T`
+11	T`	* F T`
+12	T`	epsilon
+13	F	( E )
+14	F	id
+15	F	nb
