@@ -103,7 +103,7 @@ class Compiler
                     $input = substr($input, $i + strlen($currentToken));
                     break;
                 }
-                if($i == strlen($input)) {
+                if($i == strlen($input)-1) {
                     $val = substr($input, 0, $i);
                     if(trim($val) != '') {
                         if (is_numeric($val)) {
