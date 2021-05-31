@@ -100,3 +100,16 @@ header i {
     margin-top: auto;
     text-align: right;
 }
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: .3s;
+    overflow: hidden;
+}
+
+.stack-element {
+    text-align: center;
+    border: 1px solid black;
+}

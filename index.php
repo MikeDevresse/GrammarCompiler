@@ -126,7 +126,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                                 </div>
                                 <div class="col-lg-6">
                                     <h4>Pile</h4>
-                                    <div id="stack">
+                                    <div id="stack" class="stack">
 
                                     </div>
                                 </div>
@@ -166,6 +166,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
             outputEl.innerText = '';
 
             var currentState = 0;
+            setState(0);
 
             function setState(i) {
                 outputEl.innerText = outputs.slice(0,i).join(' ');
@@ -179,11 +180,23 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
                     document.getElementById('input'+inputIndexes[j]).classList.add('visited');
                 }
                 document.getElementById('input'+inputIndexes[i]).classList.add('active');
-                stackEl.innerHTML = '';
-                for(let j = 0 ; j<stacks[i].length ; j++) {
-                    let div = document.createElement('div')
-                    div.innerText = stacks[i][j];
-                    stackEl.append(div);
+
+                function setStacks() {
+                    stackEl.innerHTML = '';
+                    for(let j = 0 ; j<stacks[i].length ; j++) {
+                        let div = document.createElement('div')
+                        div.classList.add('stack-element')
+                        div.innerText = stacks[i][j];
+                        stackEl.append(div);
+                    }
+                }
+
+                stackEl.style.height = 26*stacks[i].length + 'px';
+                if(stacks[i].length >= stacks[currentState].length) {
+                    setStacks();
+                }
+                else {
+                    setTimeout(setStacks,300);
                 }
                 currentState = i;
             }
