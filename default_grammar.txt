@@ -1,4 +1,4 @@
-nbRegle	entre	sorie
+nbRegle	entre	sortie
 1	P	debut S fin
 2	S	I R
 3	R	; I R

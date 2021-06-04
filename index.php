@@ -16,7 +16,7 @@ if(isset($_POST['grammar']) and isset($_POST['input']) and isset($_POST['diction
         try {
             $compiler = new Compiler($_POST['grammar'], $_POST['input'], $_POST['dictionary']);
             $compiler->compile();
-        } catch (CompilationException|UnknownRuleException|WrongInputException $e) {
+        } catch (UnknownRuleException|WrongInputException $e) {
             $error = $e->getMessage();
         }
     }
